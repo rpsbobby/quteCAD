@@ -1,0 +1,38 @@
+# --- Build directories ---
+cmake-build-*/
+build/
+out/
+
+# --- CMake generated files ---
+CMakeCache.txt
+CMakeFiles/
+Testing/
+CTestTestfile.cmake
+cmake_install.cmake
+Makefile
+install_manifest.txt
+compile_commands.json
+
+# --- CLion / JetBrains ---
+.idea/
+*.iml
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+
+# --- Binaries ---
+*.exe
+*.out
+*.o
+*.obj
+*.so
+*.dll
+*.a
+*.lib
+
+# --- Python virtualenvs (if used) ---
+.venv/

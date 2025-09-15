@@ -3,3 +3,5 @@
 //
 
 #include "Line.h"
+
+Line::Line(const Point &start, const Point &end):start(start), end(end) {}
