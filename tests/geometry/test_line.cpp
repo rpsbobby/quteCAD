@@ -3,14 +3,20 @@
 //
 #include <catch2/catch_test_macros.hpp>
 
-#include "geometry/Line.h"
+#include "geometry/LineEntity.h"
 #include "utils/common.h"
 
-TEST_CASE("Example")
+
+TEST_CASE("ShouldReturnLengthOfTheLine")
 {
     // given
-    Point a = {0.0, 0.0};
-    Point b = {1.0, 1.0};
+    constexpr QPointF a {0.0,0.0};
+    constexpr QPointF b {3.0,4.0};
+    const LineEntity line(a,b);
     // when
-    auto line = Line(a, b);
+    const double length = line.length();
+    // then
+    REQUIRE(length == 5.0);
 }
+
+

@@ -9,8 +9,9 @@ FetchContent_MakeAvailable(catch2)
 
 add_executable(runTests
     geometry/test_line.cpp
+        utils/test_common.cpp
 )
-target_link_libraries(runTests PRIVATE geometry Catch2::Catch2WithMain)
+target_link_libraries(runTests PRIVATE geometry Catch2::Catch2WithMain Qt5::Core Qt5::Gui Qt5::Widgets)
 
 include(CTest)
 include(Catch)

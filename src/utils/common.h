@@ -4,12 +4,13 @@
 
 #ifndef QUTECAD_COMMON_H
 #define QUTECAD_COMMON_H
+#include <cmath>
 
-struct Point
+inline double getEuclideanDistance2d(const QPointF &p1, const QPointF &p2)
 {
-    double x;
-    double y;
-};
-
+    const double dx = p2.x() - p1.x();
+    const double dy = p2.y() - p1.y();
+    return std::sqrt(dx * dx + dy * dy);
+}
 
 #endif //QUTECAD_COMMON_H
