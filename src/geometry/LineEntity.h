@@ -6,22 +6,18 @@
 #define QUTECAD_LINE_ENTITY_H
 #include <QPointF>
 
+class EntityLine {
+public:
+    EntityLine(const QPointF& p1, const QPointF& p2);
 
-class LineEntity
-{
-    public:
-        LineEntity(const QPointF &start, const QPointF &end);
+    [[nodiscard]] qreal length() const;
+    [[nodiscard]] qreal angle() const;
 
-        QPointF start() const;
+    [[nodiscard]] const QPointF& p1() const;
+    [[nodiscard]] const QPointF& p2() const;
+    void setP2(const QPointF& p);
 
-        QPointF end() const;
-
-        double length() const;
-
-        QPointF midpoint() const;
-
-    private:
-        QPointF m_start;
-        QPointF m_end;
+private:
+    QPointF m_p1, m_p2;
 };
 #endif //QUTECAD_LINE_ENTITY_H

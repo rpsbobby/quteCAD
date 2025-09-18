@@ -2,26 +2,21 @@
 
 #include "utils/common.h"
 
-LineEntity::LineEntity(const QPointF &start, const QPointF &end)
-    : m_start(start)
-    , m_end(end) {}
-
-QPointF LineEntity::start() const
+EntityLine::EntityLine(const QPointF& p1, const QPointF& p2) : m_p1(p1), m_p2(p2)
 {
-    return m_start;
 }
 
-QPointF LineEntity::end() const
+const QPointF& EntityLine::p1() const
 {
-    return m_end;
+    return m_p1;
 }
 
-double LineEntity::length() const
+const QPointF& EntityLine::p2() const
 {
-    return getEuclideanDistance2d(m_start, m_end);
+    return m_p2;
 }
 
-QPointF LineEntity::midpoint() const
+void EntityLine::setP2(const QPointF& p)
 {
-    return QPointF((m_start.x() + m_end.x()) / 2.0, (m_start.y() + m_end.y()) / 2.0);
+    m_p2 = p;
 }
