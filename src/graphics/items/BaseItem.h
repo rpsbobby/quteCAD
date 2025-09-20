@@ -5,17 +5,32 @@
 #ifndef QUTECAD_BASEITEM_H
 #define QUTECAD_BASEITEM_H
 #include <QGraphicsItem>
+#include <QPen>
 
 
 class BaseItem : public QGraphicsItem {
 public:
 
     explicit BaseItem(QGraphicsItem* parent = nullptr)
-        : QGraphicsItem(parent) {}
+        : QGraphicsItem(parent)
+    {
+        setFlags(QGraphicsItem::ItemIsSelectable |
+                 QGraphicsItem::ItemIsMovable);
+    }
 
     virtual ~BaseItem() = default;
 
     virtual void updatePreview(const QPointF& start, const QPointF& current) = 0;
     virtual void finalize() = 0;
+protected:
+    QPen stylePen(bool preview, bool selected) const {
+        if (preview) {
+            return QPen(Qt::black, 2, Qt::DashLine);
+        }
+        if (selected) {
+            return QPen(Qt::red, 2, Qt::DashLine);
+        }
+        return QPen(Qt::black, 2, Qt::SolidLine);
+    }
 };
 #endif //QUTECAD_BASEITEM_H

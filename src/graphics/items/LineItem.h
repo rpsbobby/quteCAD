@@ -5,6 +5,8 @@
 #include <QGraphicsLineItem>
 #include "BaseItem.h"
 
+class NodeItem;
+
 class LineItem : public BaseItem {
 public:
     LineItem(const QPointF& start, QGraphicsItem* parent = nullptr);
@@ -20,4 +22,5 @@ public:
 private:
     EntityLine m_entity;
     bool m_preview = true;
+    std::vector<NodeItem*> m_nodes;
 };

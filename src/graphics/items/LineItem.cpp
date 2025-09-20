@@ -1,6 +1,8 @@
 #include "LineItem.h"
 #include <QPainter>
 
+#include "NodeItem.h"
+
 LineItem::LineItem(const QPointF& start, QGraphicsItem* parent)
     : BaseItem(parent), m_entity(start, start)
 {
@@ -15,6 +17,8 @@ void LineItem::updatePreview(const QPointF& start, const QPointF& current)
 void LineItem::finalize()
 {
     m_preview = false;
+    m_nodes.push_back(new NodeItem(m_entity.p1(), this));
+    m_nodes.push_back(new NodeItem(m_entity.p2(), this));
     update();
 }
 
@@ -27,7 +31,6 @@ void LineItem::paint(QPainter* painter,
                      const QStyleOptionGraphicsItem*,
                      QWidget*)
 {
-    QPen pen(Qt::black, 2, m_preview ? Qt::DashLine : Qt::SolidLine);
-    painter->setPen(pen);
+    painter->setPen(stylePen(m_preview, isSelected()));
     painter->drawLine(m_entity.p1(), m_entity.p2());
 }

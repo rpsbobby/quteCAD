@@ -30,6 +30,8 @@ add_library(graphics
         graphics/ItemFactory.cpp
         graphics/ItemFactory.h
         graphics/items/ItemTypes.h
+        graphics/items/NodeItem.cpp
+        graphics/items/NodeItem.h
 )
 target_link_libraries(graphics PUBLIC geometry)
 target_include_directories(graphics PUBLIC
