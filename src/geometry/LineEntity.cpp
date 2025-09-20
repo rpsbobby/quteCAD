@@ -25,3 +25,15 @@ void EntityLine::setP2(const QPointF& p)
 {
     m_p2 = p;
 }
+
+std::vector<QPointF> EntityLine::nodes() const
+{
+    std::vector<QPointF> result;
+    result.push_back(m_p1);
+    result.push_back(m_p2);
+
+    // add midpoint
+    result.push_back((m_p1 + m_p2) / 2.0);
+
+    return result;
+}

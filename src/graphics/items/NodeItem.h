@@ -18,7 +18,7 @@ public :
         : QGraphicsEllipseItem(-3, -3, 6, 6, parent)
     {
         setPos(position);
-        setBrush(Qt::blue);
+        setBrush(Qt::darkBlue);
         setFlag(QGraphicsItem::ItemIsMovable);
         setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     }

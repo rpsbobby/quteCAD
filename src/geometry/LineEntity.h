@@ -5,6 +5,7 @@
 #ifndef QUTECAD_LINE_ENTITY_H
 #define QUTECAD_LINE_ENTITY_H
 #include <QPointF>
+#include <vector>
 
 class EntityLine {
 public:
@@ -17,7 +18,7 @@ public:
     [[nodiscard]] const QPointF& p2() const;
     void setP1(const QPointF& p);
     void setP2(const QPointF& p);
-
+    std::vector<QPointF> nodes() const;
 private:
     QPointF m_p1, m_p2;
 };
