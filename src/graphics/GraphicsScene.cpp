@@ -43,6 +43,7 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             item->finalize();   // toggles from dashed to solid
         }
         m_previewItem = nullptr;
+        m_drawingMode = ItemType::None; // Exit drawing mode after one item
     }
     QGraphicsScene::mouseReleaseEvent(event);
 }
