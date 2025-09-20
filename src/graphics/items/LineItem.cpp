@@ -34,3 +34,27 @@ void LineItem::paint(QPainter* painter,
     painter->setPen(stylePen(m_preview, isSelected()));
     painter->drawLine(m_entity.p1(), m_entity.p2());
 }
+
+QPainterPath LineItem::shape() const {
+    if (m_preview || isSelected())
+        return QGraphicsItem::shape();
+
+    QPainterPath path;
+    path.moveTo(m_entity.p1());
+    path.lineTo(m_entity.p2());
+
+    QPainterPathStroker stroker;
+    stroker.setWidth(6.0);   // thinner hit area
+    return stroker.createStroke(path);
+}
+
+void LineItem::nodeMoved(NodeItem* node, const QPointF& newPos)
+{
+    prepareGeometryChange();
+    if (node == m_nodes[0]) {
+        m_entity.setP1(newPos);
+    } else if (node == m_nodes[1]) {
+        m_entity.setP2(newPos);
+    }
+    update();
+}

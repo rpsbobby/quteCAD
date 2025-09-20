@@ -15,6 +15,7 @@ public:
 
     [[nodiscard]] const QPointF& p1() const;
     [[nodiscard]] const QPointF& p2() const;
+    void setP1(const QPointF& p);
     void setP2(const QPointF& p);
 
 private:

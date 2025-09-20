@@ -7,17 +7,17 @@
 
 class NodeItem;
 
-class LineItem : public BaseItem {
+class LineItem : public BaseItem
+{
 public:
     LineItem(const QPointF& start, QGraphicsItem* parent = nullptr);
 
     void updatePreview(const QPointF& start, const QPointF& current) override;
     void finalize() override;
-
     QRectF boundingRect() const override;
-    void paint(QPainter* painter,
-               const QStyleOptionGraphicsItem* option,
-               QWidget* widget) override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+    QPainterPath shape() const;
+    void nodeMoved(NodeItem* node, const QPointF& newPos) override;
 
 private:
     EntityLine m_entity;

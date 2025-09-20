@@ -4,11 +4,14 @@
 
 #ifndef QUTECAD_NODEITEM_H
 #define QUTECAD_NODEITEM_H
-#include <qbrush.h>
+
 #include <QGraphicsEllipseItem>
+#include <qbrush.h>
+
+#include "BaseItem.h"
 
 
-class NodeItem: public QGraphicsEllipseItem
+class NodeItem : public QGraphicsEllipseItem
 {
 public :
     explicit NodeItem(const QPointF& position, QGraphicsItem* parent = nullptr)
@@ -18,6 +21,26 @@ public :
         setBrush(Qt::blue);
         setFlag(QGraphicsItem::ItemIsMovable);
         setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+    }
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant& value)
+    {
+        if (change == ItemPositionChange && parentItem())
+        {
+            if (auto* line = dynamic_cast<BaseItem*>(parentItem()))
+            {
+                line->nodeMoved(this, value.toPointF());
+            }
+        }
+        return QGraphicsEllipseItem::itemChange(change, value);
+    }
+
+    QPainterPath shape() const override
+    {
+        QPainterPath path;
+        // Make selection area bigger than the painted circle
+        path.addEllipse(-8, -8, 16, 16); // interactive area
+        return path;
     }
 };
 #endif //QUTECAD_NODEITEM_H

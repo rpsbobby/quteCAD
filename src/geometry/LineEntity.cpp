@@ -16,6 +16,11 @@ const QPointF& EntityLine::p2() const
     return m_p2;
 }
 
+void EntityLine::setP1(const QPointF& p)
+{
+    m_p1 = p;
+}
+
 void EntityLine::setP2(const QPointF& p)
 {
     m_p2 = p;
