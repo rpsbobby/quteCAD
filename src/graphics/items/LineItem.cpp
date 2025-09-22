@@ -12,10 +12,11 @@ void LineItem::updatePreview(const QPointF& start, const QPointF& current) {
     prepareGeometryChange();
 }
 
-void LineItem::finalize() {
+void LineItem::finalize(const QPointF& endpoint) {
     m_preview = false;
     m_nodes.push_back(new NodeItem(m_entity.p1(), this));
-    m_nodes.push_back(new NodeItem(m_entity.p2(), this));
+    m_entity.setP2(endpoint);
+    m_nodes.push_back(new NodeItem(endpoint, this));
     update();
 }
 

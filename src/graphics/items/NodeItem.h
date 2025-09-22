@@ -23,7 +23,7 @@ public :
         setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     }
 
-    QVariant itemChange(GraphicsItemChange change, const QVariant& value)
+    QVariant itemChange(GraphicsItemChange change, const QVariant& value) override
     {
         if (change == ItemPositionChange && parentItem())
         {

@@ -9,6 +9,8 @@
 
 #include "items/ItemTypes.h"
 
+class BaseItem;
+
 class GraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
@@ -25,8 +27,15 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+    QPointF findNearestNode(const QPointF& cursor, qreal snapRadius);
 
 private:
+    struct ActiveNode {
+        BaseItem* item = nullptr;
+        int index = -1;    // which node inside item->nodes()
+    };
+
+    ActiveNode m_activeNode;
     ItemType m_drawingMode = ItemType::None;
     QPointF m_startPoint;
     QGraphicsItem* m_previewItem = nullptr;
