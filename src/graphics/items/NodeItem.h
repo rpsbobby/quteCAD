@@ -23,17 +23,17 @@ public :
         setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     }
 
-    QVariant itemChange(GraphicsItemChange change, const QVariant& value) override
-    {
-        if (change == ItemPositionChange && parentItem())
-        {
-            if (auto* line = dynamic_cast<BaseItem*>(parentItem()))
-            {
-                line->nodeMoved(this, value.toPointF());
-            }
-        }
-        return QGraphicsEllipseItem::itemChange(change, value);
-    }
+    // QVariant itemChange(GraphicsItemChange change, const QVariant& value) override
+    // {
+    //     if (change == ItemPositionChange && parentItem())
+    //     {
+    //         if (auto* line = dynamic_cast<BaseItem*>(parentItem()))
+    //         {
+    //             line->nodeMoved(this, value.toPointF());
+    //         }
+    //     }
+    //     return QGraphicsEllipseItem::itemChange(change, value);
+    // }
 
     QPainterPath shape() const override
     {

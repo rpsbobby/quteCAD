@@ -9,6 +9,7 @@
 
 #include "items/ItemTypes.h"
 
+class NodeItem;
 class BaseItem;
 
 class GraphicsScene : public QGraphicsScene
@@ -22,12 +23,13 @@ public:
 
     void setDrawingMode(ItemType mode) { m_drawingMode = mode; }
     ItemType drawingMode() const { return m_drawingMode; }
+    QPointF findNearestNode(const QPointF& cursor, qreal snapRadius) const;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
-    QPointF findNearestNode(const QPointF& cursor, qreal snapRadius);
+
 
 private:
     struct ActiveNode {
@@ -35,10 +37,13 @@ private:
         int index = -1;    // which node inside item->nodes()
     };
 
+    ActiveNode findNodeAt(const QPointF& pos, qreal radius) const;
+
     ActiveNode m_activeNode;
     ItemType m_drawingMode = ItemType::None;
     QPointF m_startPoint;
     QGraphicsItem* m_previewItem = nullptr;
+    QPointF m_currentNode = {};
 };
 
 #endif // QUTECAD_GRAPHICSSCENE_H

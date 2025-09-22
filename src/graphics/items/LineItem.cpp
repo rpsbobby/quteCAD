@@ -61,3 +61,8 @@ void LineItem::nodeMoved(NodeItem* node, const QPointF& newPos) {
     }
     update();
 }
+
+void LineItem::updateNode(int index, const QPointF& pos) {
+    m_nodes[index]->setPos(pos);
+    nodeMoved(m_nodes[index], pos);
+}

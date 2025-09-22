@@ -19,6 +19,7 @@ public:
     QPainterPath shape() const;
     void nodeMoved(NodeItem* node, const QPointF& newPos) override;
     [[nodiscard]] std::vector<NodeItem*> nodes() const override { return m_nodes; }
+    void updateNode(int index, const QPointF& pos) override;
 private:
     EntityLine m_entity;
     bool m_preview = true;
