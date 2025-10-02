@@ -7,6 +7,7 @@
 
 #include <QGraphicsScene>
 
+#include "items/ActiveNode.h"
 #include "items/ItemTypes.h"
 
 class NodeItem;
@@ -28,15 +29,10 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
 private:
-    struct ActiveNode {
-        BaseItem* item = nullptr;
-        int index = -1; // which node inside item->nodes()
-    };
 
-    ActiveNode findNodeAt(const QPointF& pos, qreal radius) const;
 
     ActiveNode m_activeNode;
-    ItemType m_drawingMode = ItemType::None;
+    ItemType m_drawingMode = ItemType::Select;
     QPointF m_startPoint;
     QGraphicsItem* m_previewItem = nullptr;
     QPointF m_currentNode = {};

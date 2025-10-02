@@ -7,6 +7,9 @@
 #include <QGraphicsItem>
 #include <QPen>
 
+#include "ActiveNode.h"
+#include "graphics/GraphicsScene.h"
+
 class NodeItem;
 
 class BaseItem : public QGraphicsItem {
@@ -28,6 +31,8 @@ public:
     virtual void nodeMoved(class NodeItem* node, const QPointF& newPos) = 0;
     [[nodiscard]] virtual std::vector<NodeItem*> nodes() const  = 0;
     virtual void updateNode(int index, const QPointF& pos) = 0;
+    virtual ActiveNode findActiveNode(const QPointF& pointF) = 0;
+    virtual void releaseNode(int index) = 0;
 
 protected:
     QPen stylePen(bool preview, bool selected) const {

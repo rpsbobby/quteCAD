@@ -19,21 +19,10 @@ public :
     {
         setPos(position);
         setBrush(Qt::darkBlue);
-        setFlag(QGraphicsItem::ItemIsMovable);
         setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     }
 
-    // QVariant itemChange(GraphicsItemChange change, const QVariant& value) override
-    // {
-    //     if (change == ItemPositionChange && parentItem())
-    //     {
-    //         if (auto* line = dynamic_cast<BaseItem*>(parentItem()))
-    //         {
-    //             line->nodeMoved(this, value.toPointF());
-    //         }
-    //     }
-    //     return QGraphicsEllipseItem::itemChange(change, value);
-    // }
+
 
     QPainterPath shape() const override
     {
@@ -41,6 +30,10 @@ public :
         // Make selection area bigger than the painted circle
         path.addEllipse(-8, -8, 16, 16); // interactive area
         return path;
+    }
+
+    void setMovable(const bool movable) {
+        setFlag(QGraphicsItem::ItemIsMovable, movable);
     }
 };
 #endif //QUTECAD_NODEITEM_H

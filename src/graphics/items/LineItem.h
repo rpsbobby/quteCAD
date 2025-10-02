@@ -16,10 +16,12 @@ public:
     void finalize(const QPointF& endpoint = {}) override;
     QRectF boundingRect() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
-    QPainterPath shape() const;
+    QPainterPath shape() const override;
     void nodeMoved(NodeItem* node, const QPointF& newPos) override;
     [[nodiscard]] std::vector<NodeItem*> nodes() const override { return m_nodes; }
     void updateNode(int index, const QPointF& pos) override;
+    ActiveNode findActiveNode(const QPointF& pointF) override;
+    void releaseNode(int index) override;
 private:
     EntityLine m_entity;
     bool m_preview = true;

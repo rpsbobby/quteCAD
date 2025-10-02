@@ -32,6 +32,8 @@ add_library(graphics
         graphics/items/ItemTypes.h
         graphics/items/NodeItem.cpp
         graphics/items/NodeItem.h
+        graphics/items/ActiveNode.h
+        graphics/items/ActiveNode.cpp
 )
 target_link_libraries(graphics PUBLIC geometry)
 target_include_directories(graphics PUBLIC

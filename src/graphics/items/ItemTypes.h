@@ -5,6 +5,6 @@
 #ifndef QUTECAD_ITEMTYPES_H
 #define QUTECAD_ITEMTYPES_H
 
-enum class ItemType { None = 0, Line, Rectangle, Circle };
+enum class ItemType { Select = 0, Line, Rectangle, Circle };
 
 #endif //QUTECAD_ITEMTYPES_H

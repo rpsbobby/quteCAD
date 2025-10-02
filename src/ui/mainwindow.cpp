@@ -50,7 +50,7 @@ void MainWindow::createToolbars()
 
     QAction* selectAction = toolbar->addAction("Select");
     connect(selectAction, &QAction::triggered, this, [this]() {
-        m_scene->setDrawingMode(ItemType::None);
+        m_scene->setDrawingMode(ItemType::Select);
         statusBar()->showMessage("Mode: Select");
     });
 }

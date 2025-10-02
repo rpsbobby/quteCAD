@@ -48,7 +48,7 @@ QPainterPath LineItem::shape() const {
     path.lineTo(m_entity.p2());
 
     QPainterPathStroker stroker;
-    stroker.setWidth(6.0); // thinner hit area
+    stroker.setWidth(30.0); // thinner hit area
     return stroker.createStroke(path);
 }
 
@@ -65,4 +65,39 @@ void LineItem::nodeMoved(NodeItem* node, const QPointF& newPos) {
 void LineItem::updateNode(int index, const QPointF& pos) {
     m_nodes[index]->setPos(pos);
     nodeMoved(m_nodes[index], pos);
+}
+
+ActiveNode LineItem::findActiveNode(const QPointF& pos) {
+    constexpr int RADIUS = 30;
+    ActiveNode result;
+
+    if (nodes().empty())
+        return result;
+
+    qreal bestDist = RADIUS;
+    int bestIndex = -1;
+
+    for (int i = 0; i < nodes().size(); ++i) {
+        const auto* node = nodes()[i];
+        const qreal dist = QLineF(pos, node->scenePos()).length();
+
+        if (dist < bestDist) {
+            bestDist = dist;
+            bestIndex = i;
+        }
+    }
+
+    if (bestIndex >= 0) {
+        result.item = this;
+        result.index = bestIndex;
+        m_nodes[bestIndex]->setMovable(true);
+    }
+
+    return result;
+}
+
+void LineItem::releaseNode(int index) {
+    if (index >= 0 && index < m_nodes.size()) {
+        m_nodes[index]->setFlag(QGraphicsItem::ItemIsMovable, false);
+    }
 }
