@@ -62,8 +62,10 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
         m_previewItem = ItemFactory::create(m_drawingMode, m_startPoint);
         if (m_previewItem)
             addItem(m_previewItem);
-        else
-            qDebug() << "No preview item found";
+
+        // convert the start point into item-local coordinates
+        if (m_previewItem)
+            m_startPoint = m_previewItem->mapFromScene(m_startPoint);
 
     }
     if (m_drawingMode == ItemType::Select) {
@@ -76,7 +78,7 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
             if (m_activeNode.item) {
                 m_activeNode.item->setSelected(false);
                 m_activeNode.item->setFlag(QGraphicsItem::ItemIsMovable, false);
-                m_activeNode.item->updateNode(m_activeNode.index, event->scenePos());
+                m_activeNode.item->updateNode(m_activeNode.index, m_activeNode.item->mapFromScene(event->scenePos()));
             }
         }
     }
@@ -84,10 +86,10 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
     if (m_previewItem) {
-        m_previewItem->updatePreview(m_startPoint, event->scenePos());
+        m_previewItem->updatePreview(m_startPoint, m_previewItem->mapFromScene(event->scenePos()));
     }
     if (m_activeNode.item) {
-        QPointF newPos = event->scenePos();
+        QPointF newPos = m_activeNode.item->mapFromScene(event->scenePos());
         m_activeNode.item->updateNode(m_activeNode.index, newPos);
     }
     QGraphicsScene::mouseMoveEvent(event);
@@ -96,10 +98,9 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
     if (m_previewItem) {
         qDebug() << "convert from preview (dashed) to final (solid)";
-        if (m_previewItem) {
-            auto endPoint = findNearestNode(event->scenePos(), RADIUS);
-            m_previewItem->finalize(endPoint); // toggles from dashed to solid
-        }
+        auto endPoint = findNearestNode(event->scenePos(), RADIUS);
+        m_previewItem->finalize(m_previewItem->mapFromScene(endPoint)); // toggles from dashed to solid
+
         m_previewItem.clear();
     }
     if (m_drawingMode == ItemType::Select && m_activeNode.item) {
