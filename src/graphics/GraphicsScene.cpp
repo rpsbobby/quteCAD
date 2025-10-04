@@ -15,9 +15,47 @@ GraphicsScene::GraphicsScene(QObject* parent)
 
 constexpr float RADIUS{30.0};
 
+QPointF GraphicsScene::findNearestNode(const QPointF& cursor, qreal snapRadius, const BaseItem* activeItem,
+                                       int activeIndex) const {
+    QPointF best{};
+    qreal bestDist = snapRadius;
+
+    for (auto* item : items()) {
+        if (const auto* base = dynamic_cast<BaseItem*>(item)) {
+            auto nodes = base->nodes();
+            for (int i = 0; i < nodes.size(); ++i) {
+                // skip the node we’re actively moving
+                if (base == activeItem && i == activeIndex)
+                    continue;
+
+                const qreal dist = QLineF(cursor, nodes[i]->scenePos()).length();
+                qDebug() << "Distance to node at" << nodes[i]->scenePos() << "is" << dist;
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best = nodes[i]->scenePos();
+                }
+            }
+        }
+    }
+
+    if (bestDist < snapRadius)
+        return best;
+
+    return cursor;
+}
+
+void GraphicsScene::setItemsMovable(bool cond) const {
+    for (auto* item : items()) {
+        if (auto* base = qgraphicsitem_cast<BaseItem*>(item)) {
+            base->setMovable(cond);
+        }
+    }
+}
+
 void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
     QGraphicsScene::mousePressEvent(event);
     if (m_drawingMode != ItemType::Select) {
+        setItemsMovable(false);
         qDebug() << "Starting to draw item of type" << static_cast<int>(m_drawingMode);
         m_startPoint = findNearestNode(event->scenePos(), RADIUS);
         m_previewItem = ItemFactory::create(m_drawingMode, m_startPoint);
@@ -69,34 +107,6 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
         m_activeNode = {};
     }
     m_drawingMode = ItemType::Select; // Exit drawing mode after one item
+    setItemsMovable(true);
     QGraphicsScene::mouseReleaseEvent(event);
-}
-
-QPointF GraphicsScene::findNearestNode(const QPointF& cursor, qreal snapRadius, const BaseItem* activeItem,
-                                       int activeIndex) const {
-    QPointF best{};
-    qreal bestDist = snapRadius;
-
-    for (auto* item : items()) {
-        if (const auto* base = dynamic_cast<BaseItem*>(item)) {
-            auto nodes = base->nodes();
-            for (int i = 0; i < nodes.size(); ++i) {
-                // skip the node we’re actively moving
-                if (base == activeItem && i == activeIndex)
-                    continue;
-
-                const qreal dist = QLineF(cursor, nodes[i]->scenePos()).length();
-                qDebug() << "Distance to node at" << nodes[i]->scenePos() << "is" << dist;
-                if (dist < bestDist) {
-                    bestDist = dist;
-                    best = nodes[i]->scenePos();
-                }
-            }
-        }
-    }
-
-    if (bestDist < snapRadius)
-        return best;
-
-    return cursor;
 }

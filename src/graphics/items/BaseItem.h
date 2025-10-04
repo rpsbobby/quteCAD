@@ -34,6 +34,11 @@ public:
     virtual ActiveNode findActiveNode(const QPointF& pointF) = 0;
     virtual void releaseNode(int index) = 0;
 
+    void setMovable(const bool cond) {
+        setFlag(QGraphicsItem::ItemIsMovable, cond);
+        setFlag(QGraphicsItem::ItemIsSelectable, cond);
+    }
+
 protected:
     QPen stylePen(bool preview, bool selected) const {
         if (preview) {

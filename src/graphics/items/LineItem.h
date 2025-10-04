@@ -22,6 +22,7 @@ public:
     void updateNode(int index, const QPointF& pos) override;
     ActiveNode findActiveNode(const QPointF& pointF) override;
     void releaseNode(int index) override;
+
 private:
     EntityLine m_entity;
     bool m_preview = true;

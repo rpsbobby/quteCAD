@@ -24,8 +24,9 @@ public:
     QPointF findNearestNode(const QPointF& cursor, qreal snapRadius, const BaseItem* activeItem = nullptr, int activeIndex = -1) const;
 
 protected:
+    void setItemsMovable(bool cond) const;
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
 private:
