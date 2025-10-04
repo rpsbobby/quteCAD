@@ -18,6 +18,7 @@ public:
     [[nodiscard]] const QPointF& p2() const;
     void setP1(const QPointF& p);
     void setP2(const QPointF& p);
+    void setNode(int index, const QPointF& pos);
     std::vector<QPointF> nodes() const;
 private:
     QPointF m_p1, m_p2;

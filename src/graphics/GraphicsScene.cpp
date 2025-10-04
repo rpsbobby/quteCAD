@@ -11,6 +11,7 @@
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent) {
     setSceneRect(-500, -500, 1000, 1000); // example scene size
+    connect(this, &GraphicsScene::signalSetItemsMovable, this, &GraphicsScene::setItemsMovable);
 }
 
 constexpr float RADIUS{30.0};
@@ -44,9 +45,9 @@ QPointF GraphicsScene::findNearestNode(const QPointF& cursor, qreal snapRadius, 
     return cursor;
 }
 
-void GraphicsScene::setItemsMovable(bool cond) const {
+void GraphicsScene::setItemsMovable(bool cond) {
     for (auto* item : items()) {
-        if (auto* base = qgraphicsitem_cast<BaseItem*>(item)) {
+        if (auto* base = dynamic_cast<BaseItem*>(item)) {
             base->setMovable(cond);
         }
     }
@@ -63,6 +64,7 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
             addItem(m_previewItem);
         else
             qDebug() << "No preview item found";
+
     }
     if (m_drawingMode == ItemType::Select) {
         if (!this->selectedItems().isEmpty()) {
@@ -82,7 +84,7 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
 void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
     if (m_previewItem) {
-        dynamic_cast<BaseItem*>(m_previewItem)->updatePreview(m_startPoint, event->scenePos());
+        m_previewItem->updatePreview(m_startPoint, event->scenePos());
     }
     if (m_activeNode.item) {
         QPointF newPos = event->scenePos();
@@ -94,11 +96,11 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
 void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
     if (m_previewItem) {
         qDebug() << "convert from preview (dashed) to final (solid)";
-        if (auto* item = dynamic_cast<BaseItem*>(m_previewItem)) {
+        if (m_previewItem) {
             auto endPoint = findNearestNode(event->scenePos(), RADIUS);
-            item->finalize(endPoint); // toggles from dashed to solid
+            m_previewItem->finalize(endPoint); // toggles from dashed to solid
         }
-        m_previewItem = nullptr;
+        m_previewItem.clear();
     }
     if (m_drawingMode == ItemType::Select && m_activeNode.item) {
         const QPointF snapped = findNearestNode(event->scenePos(), RADIUS, m_activeNode.item, m_activeNode.index);
@@ -107,6 +109,6 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
         m_activeNode = {};
     }
     m_drawingMode = ItemType::Select; // Exit drawing mode after one item
-    setItemsMovable(true);
+    emit signalSetItemsMovable(true);//setItemsMovable(true);
     QGraphicsScene::mouseReleaseEvent(event);
 }

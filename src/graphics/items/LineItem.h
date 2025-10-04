@@ -16,9 +16,13 @@ public:
     void finalize(const QPointF& endpoint = {}) override;
     QRectF boundingRect() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+    QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
+    void updateEntityPosition() override;
+    void updateNodeGraphics() override;
     QPainterPath shape() const override;
     void nodeMoved(NodeItem* node, const QPointF& newPos) override;
-    [[nodiscard]] std::vector<NodeItem*> nodes() const override { return m_nodes; }
+    void setMovable(bool cond) override;
+    [[nodiscard]] std::vector<NodeItem*> nodes() const override;
     void updateNode(int index, const QPointF& pos) override;
     ActiveNode findActiveNode(const QPointF& pointF) override;
     void releaseNode(int index) override;

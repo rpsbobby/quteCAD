@@ -5,6 +5,9 @@
 
 LineItem::LineItem(const QPointF& start, QGraphicsItem* parent)
     : BaseItem(parent), m_entity(start, start) {
+    setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
 
 void LineItem::updatePreview(const QPointF& start, const QPointF& current) {
@@ -52,6 +55,26 @@ void LineItem::paint(QPainter* painter,
     painter->drawPath(s);
 }
 
+QVariant LineItem::itemChange(GraphicsItemChange change, const QVariant& value) {
+    if (change == ItemPositionChange) {
+        updateEntityPosition();
+    }
+    return QGraphicsObject::itemChange(change, value);
+}
+
+void LineItem::updateEntityPosition() {
+    // if your entity stores nodes in scene coordinates:
+    auto temp = mapToScene(this->pos());
+    m_entity.setP1(m_nodes[0]->pos());
+    m_entity.setP2(m_nodes[1]->pos());
+}
+
+void LineItem::updateNodeGraphics() {
+    // keep node graphics synced with logical geometry
+    // m_nodes[0]->setPos(m_entity.p1());
+    // m_nodes[1]->setPos(m_entity.p2());
+}
+
 QPainterPath LineItem::shape() const {
     if (m_preview || isSelected())
         return QGraphicsItem::shape();
@@ -70,7 +93,7 @@ QPainterPath LineItem::shape() const {
 
 void LineItem::nodeMoved(NodeItem* node, const QPointF& newPos) {
     prepareGeometryChange();
-    node->setPos(newPos);
+    // node->setPos(newPos);
     if (node == m_nodes[0]) {
         m_entity.setP1(newPos);
     } else if (node == m_nodes[1]) {
@@ -78,6 +101,13 @@ void LineItem::nodeMoved(NodeItem* node, const QPointF& newPos) {
     }
     update();
 }
+
+void LineItem::setMovable(bool cond) {
+    this->setFlag(QGraphicsItem::ItemIsMovable, cond);
+    this->setFlag(QGraphicsItem::ItemIsSelectable, cond);
+}
+
+std::vector<NodeItem*> LineItem::nodes() const { return m_nodes; }
 
 void LineItem::updateNode(int index, const QPointF& pos) {
     nodeMoved(m_nodes[index], pos);

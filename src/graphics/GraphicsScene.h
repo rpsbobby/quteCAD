@@ -6,12 +6,14 @@
 #define QUTECAD_GRAPHICSSCENE_H
 
 #include <QGraphicsScene>
+#include  <QPointer>
 
 #include "items/ActiveNode.h"
 #include "items/ItemTypes.h"
 
 class NodeItem;
 class BaseItem;
+
 
 class GraphicsScene : public QGraphicsScene {
     Q_OBJECT
@@ -21,22 +23,24 @@ public:
 
     void setDrawingMode(ItemType mode) { m_drawingMode = mode; }
     ItemType drawingMode() const { return m_drawingMode; }
-    QPointF findNearestNode(const QPointF& cursor, qreal snapRadius, const BaseItem* activeItem = nullptr, int activeIndex = -1) const;
+    QPointF findNearestNode(const QPointF& cursor, qreal snapRadius, const BaseItem* activeItem = nullptr,
+                            int activeIndex = -1) const;
 
 protected:
-    void setItemsMovable(bool cond) const;
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
+private slots:
+    void setItemsMovable(bool cond);
+signals:
+    void signalSetItemsMovable(bool cond);
+
 private:
-
-
     ActiveNode m_activeNode;
     ItemType m_drawingMode = ItemType::Select;
     QPointF m_startPoint;
-    QGraphicsItem* m_previewItem = nullptr;
+    QPointer<BaseItem> m_previewItem = {};
     QPointF m_currentNode = {};
 };
-
 #endif // QUTECAD_GRAPHICSSCENE_H
