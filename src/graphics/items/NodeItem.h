@@ -28,7 +28,7 @@ public :
     {
         QPainterPath path;
         // Make selection area bigger than the painted circle
-        path.addEllipse(-8, -8, 16, 16); // interactive area
+        path.addEllipse(-4, -4, 8, 8); // interactive area
         return path;
     }
 

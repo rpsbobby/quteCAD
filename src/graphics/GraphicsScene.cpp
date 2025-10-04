@@ -33,9 +33,11 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
                     m_activeNode = base->findActiveNode(event->scenePos());
                 }
             }
-            if (m_activeNode.item)
+            if (m_activeNode.item) {
                 m_activeNode.item->setSelected(false);
-
+                m_activeNode.item->setFlag(QGraphicsItem::ItemIsMovable, false);
+                m_activeNode.item->updateNode(m_activeNode.index, event->scenePos());
+            }
         }
     }
 }
@@ -59,14 +61,14 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
             item->finalize(endPoint); // toggles from dashed to solid
         }
         m_previewItem = nullptr;
-        m_drawingMode = ItemType::Select; // Exit drawing mode after one item
     }
     if (m_drawingMode == ItemType::Select && m_activeNode.item) {
         const QPointF snapped = findNearestNode(event->scenePos(), RADIUS, m_activeNode.item, m_activeNode.index);
         m_activeNode.item->updateNode(m_activeNode.index, snapped);
+        m_activeNode.item->setFlag(QGraphicsItem::ItemIsMovable, true);
         m_activeNode = {};
     }
-
+    m_drawingMode = ItemType::Select; // Exit drawing mode after one item
     QGraphicsScene::mouseReleaseEvent(event);
 }
 

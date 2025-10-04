@@ -21,7 +21,12 @@ void LineItem::finalize(const QPointF& endpoint) {
 }
 
 QRectF LineItem::boundingRect() const {
-    return QRectF(m_entity.p1(), m_entity.p2()).normalized();
+    QRectF rect(m_entity.p1(), m_entity.p2());
+    // normalize (p1 could be right/bottom of p2)
+    rect = rect.normalized();
+    // add margin for stroke width
+    rect.adjust(-30, -30, +30, +30);
+    return rect;
 }
 
 void LineItem::paint(QPainter* painter,
@@ -37,6 +42,14 @@ void LineItem::paint(QPainter* painter,
             painter->drawEllipse(node, 3, 3);
         }
     }
+
+    // --- DEBUG: draw shape outline ---
+    QPainterPath s = shape();
+    QPen debugPen(Qt::green, 1, Qt::DashLine);
+    debugPen.setCosmetic(true); // always 1px, not zoom-dependent
+    painter->setPen(debugPen);
+    painter->setBrush(Qt::NoBrush);
+    painter->drawPath(s);
 }
 
 QPainterPath LineItem::shape() const {
@@ -48,12 +61,16 @@ QPainterPath LineItem::shape() const {
     path.lineTo(m_entity.p2());
 
     QPainterPathStroker stroker;
-    stroker.setWidth(30.0); // thinner hit area
-    return stroker.createStroke(path);
+    stroker.setWidth(60.0); // thicker clickable area
+
+    QPainterPath hitArea = stroker.createStroke(path);
+
+    return hitArea;
 }
 
 void LineItem::nodeMoved(NodeItem* node, const QPointF& newPos) {
     prepareGeometryChange();
+    node->setPos(newPos);
     if (node == m_nodes[0]) {
         m_entity.setP1(newPos);
     } else if (node == m_nodes[1]) {
@@ -63,7 +80,6 @@ void LineItem::nodeMoved(NodeItem* node, const QPointF& newPos) {
 }
 
 void LineItem::updateNode(int index, const QPointF& pos) {
-    m_nodes[index]->setPos(pos);
     nodeMoved(m_nodes[index], pos);
 }
 
