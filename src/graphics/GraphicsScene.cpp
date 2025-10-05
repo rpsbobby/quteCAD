@@ -7,14 +7,13 @@
 #include "ItemFactory.h"
 #include "items/NodeItem.h"
 
+constexpr float RADIUS{30.0};
 
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent) {
     setSceneRect(-500, -500, 1000, 1000); // example scene size
     connect(this, &GraphicsScene::signalSetItemsMovable, this, &GraphicsScene::setItemsMovable);
 }
-
-constexpr float RADIUS{30.0};
 
 QPointF GraphicsScene::findNearestNode(const QPointF& cursor, qreal snapRadius, const BaseItem* activeItem,
                                        int activeIndex) const {
@@ -29,11 +28,11 @@ QPointF GraphicsScene::findNearestNode(const QPointF& cursor, qreal snapRadius, 
                 if (base == activeItem && i == activeIndex)
                     continue;
 
-                const qreal dist = QLineF(cursor, nodes[i]->scenePos()).length();
-                qDebug() << "Distance to node at" << nodes[i]->scenePos() << "is" << dist;
+                const qreal dist = QLineF(cursor, nodes[i]->position()).length();
+                qDebug() << "Distance to node at" << nodes[i]->position() << "is" << dist;
                 if (dist < bestDist) {
                     bestDist = dist;
-                    best = nodes[i]->scenePos();
+                    best = nodes[i]->position();
                 }
             }
         }
@@ -45,7 +44,7 @@ QPointF GraphicsScene::findNearestNode(const QPointF& cursor, qreal snapRadius, 
     return cursor;
 }
 
-void GraphicsScene::setItemsMovable(bool cond) {
+void GraphicsScene::setItemsMovable(bool cond) const {
     for (auto* item : items()) {
         if (auto* base = dynamic_cast<BaseItem*>(item)) {
             base->setMovable(cond);
@@ -66,7 +65,6 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
         // convert the start point into item-local coordinates
         if (m_previewItem)
             m_startPoint = m_previewItem->mapFromScene(m_startPoint);
-
     }
     if (m_drawingMode == ItemType::Select) {
         if (!this->selectedItems().isEmpty()) {
@@ -110,6 +108,6 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
         m_activeNode = {};
     }
     m_drawingMode = ItemType::Select; // Exit drawing mode after one item
-    emit signalSetItemsMovable(true);//setItemsMovable(true);
+    emit signalSetItemsMovable(true); //setItemsMovable(true);
     QGraphicsScene::mouseReleaseEvent(event);
 }

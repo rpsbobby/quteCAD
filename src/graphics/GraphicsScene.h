@@ -32,7 +32,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
 private slots:
-    void setItemsMovable(bool cond);
+    void setItemsMovable(bool cond) const;
 signals:
     void signalSetItemsMovable(bool cond);
 

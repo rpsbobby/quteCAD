@@ -17,9 +17,9 @@ void LineItem::updatePreview(const QPointF& start, const QPointF& current) {
 
 void LineItem::finalize(const QPointF& endpoint) {
     m_preview = false;
-    m_nodes.push_back(new NodeItem(m_entity.p1(), this));
+    m_nodes.push_back(new NodeItem(m_entity.p1()));
     m_entity.setP2(endpoint);
-    m_nodes.push_back(new NodeItem(endpoint, this));
+    m_nodes.push_back(new NodeItem(endpoint));
     update();
 }
 
@@ -65,8 +65,8 @@ QVariant LineItem::itemChange(GraphicsItemChange change, const QVariant& value) 
 void LineItem::updateEntityPosition() {
     // if your entity stores nodes in scene coordinates:
     auto temp = mapToScene(this->pos());
-    m_entity.setP1(m_nodes[0]->pos());
-    m_entity.setP2(m_nodes[1]->pos());
+    m_entity.setP1(m_nodes[0]->position());
+    m_entity.setP2(m_nodes[1]->position());
 }
 
 void LineItem::updateNodeGraphics() {
@@ -125,7 +125,7 @@ ActiveNode LineItem::findActiveNode(const QPointF& pos) {
 
     for (int i = 0; i < nodes().size(); ++i) {
         const auto* node = nodes()[i];
-        const qreal dist = QLineF(pos, node->scenePos()).length();
+        const qreal dist = QLineF(pos, node->position()).length();
 
         if (dist < bestDist) {
             bestDist = dist;
@@ -136,7 +136,6 @@ ActiveNode LineItem::findActiveNode(const QPointF& pos) {
     if (bestIndex >= 0) {
         result.item = this;
         result.index = bestIndex;
-        m_nodes[bestIndex]->setMovable(true);
     }
 
     return result;
@@ -144,6 +143,6 @@ ActiveNode LineItem::findActiveNode(const QPointF& pos) {
 
 void LineItem::releaseNode(int index) {
     if (index >= 0 && index < m_nodes.size()) {
-        m_nodes[index]->setFlag(QGraphicsItem::ItemIsMovable, false);
+        // m_nodes[index]->setFlag(QGraphicsItem::ItemIsMovable, false);
     }
 }
