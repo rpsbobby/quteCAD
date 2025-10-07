@@ -16,7 +16,7 @@ GraphicsScene::GraphicsScene(QObject* parent)
 }
 
 QPointF GraphicsScene::findNearestNode(const QPointF& cursor, qreal snapRadius, const BaseItem* activeItem,
-                                       int activeIndex) const {
+                                       const NodeItem* activeNode ) const {
     QPointF best{};
     qreal bestDist = snapRadius;
 
@@ -25,7 +25,7 @@ QPointF GraphicsScene::findNearestNode(const QPointF& cursor, qreal snapRadius, 
             auto nodes = base->nodes();
             for (int i = 0; i < nodes.size(); ++i) {
                 // skip the node we’re actively moving
-                if (base == activeItem && i == activeIndex)
+                if (base == activeItem && nodes[i] == activeNode)
                     continue;
 
                 const qreal dist = QLineF(cursor, nodes[i]->position()).length();
@@ -76,7 +76,7 @@ void GraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
             if (m_activeNode.item) {
                 m_activeNode.item->setSelected(false);
                 m_activeNode.item->setFlag(QGraphicsItem::ItemIsMovable, false);
-                m_activeNode.item->updateNode(m_activeNode.index, m_activeNode.item->mapFromScene(event->scenePos()));
+                m_activeNode.item->updateNode(m_activeNode.node, m_activeNode.item->mapFromScene(event->scenePos()));
             }
         }
     }
@@ -88,7 +88,7 @@ void GraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
     }
     if (m_activeNode.item) {
         QPointF newPos = m_activeNode.item->mapFromScene(event->scenePos());
-        m_activeNode.item->updateNode(m_activeNode.index, newPos);
+        m_activeNode.item->updateNode(m_activeNode.node, newPos);
     }
     QGraphicsScene::mouseMoveEvent(event);
 }
@@ -102,8 +102,8 @@ void GraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
         m_previewItem.clear();
     }
     if (m_drawingMode == ItemType::Select && m_activeNode.item) {
-        const QPointF snapped = findNearestNode(event->scenePos(), RADIUS, m_activeNode.item, m_activeNode.index);
-        m_activeNode.item->updateNode(m_activeNode.index, snapped);
+        const QPointF snapped = findNearestNode(event->scenePos(), RADIUS, m_activeNode.item, m_activeNode.node);
+        m_activeNode.item->updateNode(m_activeNode.node, snapped);
         m_activeNode.item->setFlag(QGraphicsItem::ItemIsMovable, true);
         m_activeNode = {};
     }

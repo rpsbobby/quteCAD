@@ -24,7 +24,7 @@ public:
     void setDrawingMode(ItemType mode) { m_drawingMode = mode; }
     ItemType drawingMode() const { return m_drawingMode; }
     QPointF findNearestNode(const QPointF& cursor, qreal snapRadius, const BaseItem* activeItem = nullptr,
-                            int activeIndex = -1) const;
+                            const NodeItem* activeNode = nullptr) const;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;

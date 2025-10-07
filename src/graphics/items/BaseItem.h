@@ -28,13 +28,13 @@ public:
     QPainterPath shape() const override = 0;
     virtual void nodeMoved(class NodeItem* node, const QPointF& newPos) = 0;
     [[nodiscard]] virtual std::vector<NodeItem*> nodes() const  = 0;
-    virtual void updateNode(int index, const QPointF& pos) = 0;
+    virtual void updateNode(const NodeItem*, const QPointF& pos) = 0;
     virtual ActiveNode findActiveNode(const QPointF& pointF) = 0;
-    virtual void releaseNode(int index) = 0;
+    virtual void releaseNode(NodeItem *) = 0;
     virtual void setMovable(bool cond) = 0;
     QVariant itemChange(GraphicsItemChange change, const QVariant& value) override = 0;
     virtual void updateEntityPosition() = 0;
-    virtual void updateNodeGraphics() = 0;
+    // virtual void updateNodeGraphics() = 0;
 
 protected:
     static QPen stylePen(bool preview, bool selected) {

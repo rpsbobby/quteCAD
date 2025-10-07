@@ -6,7 +6,7 @@
 #include "BaseItem.h"
 
 ActiveNode::~ActiveNode() {
-    if (item && index >= 0) {
-        item->releaseNode(index);
+    if (item && node) {
+        item->releaseNode(node);
     }
 }

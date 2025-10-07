@@ -18,17 +18,15 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
     QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
     void updateEntityPosition() override;
-    void updateNodeGraphics() override;
     QPainterPath shape() const override;
     void nodeMoved(NodeItem* node, const QPointF& newPos) override;
     void setMovable(bool cond) override;
     [[nodiscard]] std::vector<NodeItem*> nodes() const override;
-    void updateNode(int index, const QPointF& pos) override;
+    void updateNode(const NodeItem* index, const QPointF& pos) override;
     ActiveNode findActiveNode(const QPointF& pointF) override;
-    void releaseNode(int index) override;
+    void releaseNode(NodeItem *) override;
 
 private:
     EntityLine m_entity;
     bool m_preview = true;
-    std::vector<NodeItem*> m_nodes;
 };

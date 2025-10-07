@@ -17,9 +17,9 @@ void LineItem::updatePreview(const QPointF& start, const QPointF& current) {
 
 void LineItem::finalize(const QPointF& endpoint) {
     m_preview = false;
-    m_nodes.push_back(new NodeItem(m_entity.p1()));
+    // m_nodes.push_back(new NodeItem(m_entity.p1()));
     m_entity.setP2(endpoint);
-    m_nodes.push_back(new NodeItem(endpoint));
+    // m_nodes.push_back(new NodeItem(endpoint));
     update();
 }
 
@@ -42,7 +42,7 @@ void LineItem::paint(QPainter* painter,
         painter->setPen(Qt::NoPen);
 
         for (const auto& node : m_entity.nodes()) {
-            painter->drawEllipse(node, 3, 3);
+            painter->drawEllipse(node->position(), 3, 3);
         }
     }
 
@@ -65,14 +65,8 @@ QVariant LineItem::itemChange(GraphicsItemChange change, const QVariant& value) 
 void LineItem::updateEntityPosition() {
     // if your entity stores nodes in scene coordinates:
     auto temp = mapToScene(this->pos());
-    m_entity.setP1(m_nodes[0]->position());
-    m_entity.setP2(m_nodes[1]->position());
-}
-
-void LineItem::updateNodeGraphics() {
-    // keep node graphics synced with logical geometry
-    // m_nodes[0]->setPos(m_entity.p1());
-    // m_nodes[1]->setPos(m_entity.p2());
+        // m_entity.setP1(m_nodes[0]->position());
+        // m_entity.setP2(m_nodes[1]->position());
 }
 
 QPainterPath LineItem::shape() const {
@@ -93,12 +87,7 @@ QPainterPath LineItem::shape() const {
 
 void LineItem::nodeMoved(NodeItem* node, const QPointF& newPos) {
     prepareGeometryChange();
-    // node->setPos(newPos);
-    if (node == m_nodes[0]) {
-        m_entity.setP1(newPos);
-    } else if (node == m_nodes[1]) {
-        m_entity.setP2(newPos);
-    }
+    m_entity.setNode(node, newPos);
     update();
 }
 
@@ -107,10 +96,12 @@ void LineItem::setMovable(bool cond) {
     this->setFlag(QGraphicsItem::ItemIsSelectable, cond);
 }
 
-std::vector<NodeItem*> LineItem::nodes() const { return m_nodes; }
+std::vector<NodeItem*> LineItem::nodes() const { return m_entity.nodes() ; }
 
-void LineItem::updateNode(int index, const QPointF& pos) {
-    nodeMoved(m_nodes[index], pos);
+void LineItem::updateNode(const NodeItem* node, const QPointF& pos) {
+    prepareGeometryChange();
+    m_entity.setNode(node, pos);
+    update();
 }
 
 ActiveNode LineItem::findActiveNode(const QPointF& pos) {
@@ -135,14 +126,12 @@ ActiveNode LineItem::findActiveNode(const QPointF& pos) {
 
     if (bestIndex >= 0) {
         result.item = this;
-        result.index = bestIndex;
+        result.node = nodes()[bestIndex];
     }
 
     return result;
 }
 
-void LineItem::releaseNode(int index) {
-    if (index >= 0 && index < m_nodes.size()) {
-        // m_nodes[index]->setFlag(QGraphicsItem::ItemIsMovable, false);
-    }
+void LineItem::releaseNode(NodeItem *) {
+
 }

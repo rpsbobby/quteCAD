@@ -5,12 +5,12 @@
 #ifndef QUTECAD_ACTIVENODE_H
 #define QUTECAD_ACTIVENODE_H
 
-
+class NodeItem;
 class BaseItem;
 
 struct ActiveNode {
     BaseItem* item = nullptr;
-    int index = -1; // which node inside item->nodes()
+    NodeItem* node = nullptr; // which node inside item->nodes()
     ~ActiveNode();
 };
 

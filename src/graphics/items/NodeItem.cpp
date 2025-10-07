@@ -11,3 +11,7 @@ void NodeItem::setPosition(const QPointF& newPosition) {
 QPointF NodeItem::position() const {
     return m_position;
 }
+
+bool NodeItem::isMovable() const {
+    return true;
+}

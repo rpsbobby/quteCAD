@@ -14,5 +14,6 @@ public :
     explicit NodeItem(const QPointF& position);
     void setPosition(const QPointF& newPosition);
     QPointF position() const;
+    bool isMovable() const;
 };
 #endif //QUTECAD_NODEITEM_H

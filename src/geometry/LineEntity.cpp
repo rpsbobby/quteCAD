@@ -1,50 +1,50 @@
 #include "LineEntity.h"
 
-EntityLine::EntityLine(const QPointF& p1, const QPointF& p2) : m_p1(p1), m_p2(p2)
-{
+#include "graphics/items/NodeItem.h"
+
+EntityLine::EntityLine(const QPointF& p1, const QPointF& p2) : m_p1(p1), m_p2(p2) {
 }
 
-const QPointF& EntityLine::p1() const
-{
+const QPointF& EntityLine::p1() const {
     return m_p1;
 }
 
-const QPointF& EntityLine::p2() const
-{
+const QPointF& EntityLine::p2() const {
     return m_p2;
 }
 
-void EntityLine::setP1(const QPointF& p)
-{
+void EntityLine::setP1(const QPointF& p) {
     m_p1 = p;
+    updateDependentNodes();
 }
 
-void EntityLine::setP2(const QPointF& p)
-{
+void EntityLine::setP2(const QPointF& p) {
     m_p2 = p;
+    updateDependentNodes();
 }
 
-void EntityLine::setNode(int index, const QPointF& pos) {
-    switch (index) {
-        case 0:
-            setP1(pos);
+void EntityLine::setNode(const NodeItem* nodeRef, const QPointF& newPos) {
+    for (auto* node : m_nodes) {
+        if (node == nodeRef && nodeRef->isMovable()) {
+            node->setPosition(newPos);
             break;
-        case 1:
-            setP2(pos);
-            break;
-        default:
-            break;
+        }
+    }
+    updateDependentNodes();
+}
+
+void EntityLine::updateDependentNodes()
+{
+    if (m_nodes.size() == 3) {
+        const QPointF& start = m_nodes.front()->position();
+        const QPointF& end   = m_nodes.back()->position();
+
+        // recompute midpoint
+        m_nodes[1]->setPosition((start + end) * 0.5);
     }
 }
 
-std::vector<QPointF> EntityLine::nodes() const
-{
-    std::vector<QPointF> result;
-    result.push_back(m_p1);
-    result.push_back(m_p2);
 
-    // add midpoint
-    result.push_back((m_p1 + m_p2) / 2.0);
-
-    return result;
+std::vector<NodeItem*> const EntityLine::nodes() const {
+    return m_nodes;
 }
